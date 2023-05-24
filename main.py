@@ -8,23 +8,23 @@ import pandas as pd
 import pickle
 import os
 from sklearn.ensemble import RandomForestClassifier
-#import rembg as remove
+
 
 app = FastAPI()
 
-def imageProcess(input_path):
+def imageProcess(input_data):
     
     with open('RFA.pkl', 'rb') as file:
         clf=pickle.load(file)
 
-    input1 = cv2.imread(input_path.file.read())    
-    resized_image = cv2.resize(input1, (1600, 1200))
+    input1 = cv2.imdecode(np.frombuffer(input_data, np.uint8), cv2.IMREAD_COLOR)    
+    
+    #image resizing
+    #resized_image = cv2.resize(input1, (1600, 1200))
     
     #background removal
-    #input_image = remove(resized_image)
-            
     #RGB to gray
-    grayscale_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
+    grayscale_image = cv2.cvtColor(input1, cv2.COLOR_BGR2GRAY)
     
     #median filtering
     medianfilter_image=cv2.medianBlur(grayscale_image,3)    #3 is the kernel size
@@ -65,8 +65,9 @@ def imageProcess(input_path):
     df.to_csv("features_100.csv", index=False)
     X_test = pd.read_csv("features_100.csv", header=None, names=['feat1', 'feat2', 'feat3', 'feat4', 'feat5', 'feat6'])
     predicted_label=clf.predict(X_test)
-
+    
     return predicted_label[0]
+    
 
 @app.post("/predict")
 async def predict_plant(file: UploadFile = File(...)):
@@ -75,17 +76,11 @@ async def predict_plant(file: UploadFile = File(...)):
         return {"status": "error", "message": "Image must be jpg or png format!"}
     
     contents = await file.read()
-    image = Image.open(BytesIO(contents))
-    image = image.convert("RGB")
-    img_path = f"{file.filename}"
-    with open(img_path, "wb") as f:
-        f.write(contents)
     
-    label = imageProcess(img_path)
-    os.remove(img_path)
-    #return {"predicted_label": label}
-    return {"hello"}
-
+    label = imageProcess(contents)
+    return {label}
+    
+    
 
 if __name__ == "__main__":
     import uvicorn
