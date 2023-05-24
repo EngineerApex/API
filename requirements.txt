@@ -1,3 +1,2 @@
-rembg
 fastapi==0.93.0
 uvicorn==0.20.0
