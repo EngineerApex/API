@@ -66,7 +66,7 @@ def imageProcess(input_data):
     X_test = pd.read_csv("features_100.csv", header=None, names=['feat1', 'feat2', 'feat3', 'feat4', 'feat5', 'feat6'])
     predicted_label=clf.predict(X_test)
     
-    return predicted_label[0]
+    return predicted_label[1]
     
 
 @app.post("/predict")
