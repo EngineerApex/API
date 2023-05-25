@@ -38,7 +38,7 @@ def imageProcess(input_data):
     #Canny Edge Detection
     edges = cv2.Canny(medianfilter_image,100,200)
 
-    contours, _ = cv2.findContours(binary_image,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(inverted_image,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     for i, contour in enumerate(contours):
         area = cv2.contourArea(contour)
         perimeter = cv2.arcLength(contour,True)
