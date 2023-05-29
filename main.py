@@ -20,11 +20,11 @@ def imageProcess(input_data):
     input1 = cv2.imdecode(np.frombuffer(input_data, np.uint8), cv2.IMREAD_COLOR)    
     
     #image resizing
-    #resized_image = cv2.resize(input1, (1600, 1200))
+    resized_image = cv2.resize(input1, (1600, 1200))
     
     #background removal
     #RGB to gray
-    grayscale_image = cv2.cvtColor(input1, cv2.COLOR_BGR2GRAY)
+    grayscale_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
     
     #median filtering
     medianfilter_image=cv2.medianBlur(grayscale_image,3)    #3 is the kernel size
